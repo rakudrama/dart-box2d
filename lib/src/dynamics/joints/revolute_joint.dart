@@ -467,4 +467,3 @@ class RevoluteJoint extends Joint {
     upperAngle = upper;
   }
 }
-

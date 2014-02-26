@@ -27,7 +27,7 @@ abstract class Contact {
   static const int BULLET_HIT_FLAG = 0x0010;
 
   /** The flags for this Contact. */
-  int flags;
+  int flags = 0;
 
   /** World pool and list pointers. */
   //TODO(gregbglw): Write benchmark comparing this linked list style with just
@@ -36,15 +36,15 @@ abstract class Contact {
   Contact next;
 
   /** Nodes for connecting bodies. */
-  ContactEdge edge1 = new ContactEdge();
-  ContactEdge edge2 = new ContactEdge();
+  final ContactEdge edge1 = new ContactEdge();
+  final ContactEdge edge2 = new ContactEdge();
 
   Fixture fixtureA;
   Fixture fixtureB;
 
   Manifold manifold = new Manifold();
 
-  int toiCount;
+  int toiCount = 0;
 
   DefaultWorldPool pool;
 
@@ -63,20 +63,17 @@ abstract class Contact {
 
     manifold.pointCount = 0;
 
+    toiCount = 0;
+  }
+
+  /** Clears references so pooled objects don't cause memory leaks. */
+  void clearReferences() {
     prev = null;
     next = null;
-
-    edge1.contact = null;
-    edge1.prev = null;
-    edge1.next = null;
-    edge1.other = null;
-
-    edge2.contact = null;
-    edge2.prev = null;
-    edge2.next = null;
-    edge2.other = null;
-
-    toiCount = 0;
+    fixtureA = null;
+    fixtureB = null;
+    edge1.clearReferences();
+    edge2.clearReferences();
   }
 
   /**

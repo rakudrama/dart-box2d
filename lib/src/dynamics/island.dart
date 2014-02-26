@@ -22,20 +22,13 @@ part of box2d;
 class Island {
   ContactListener listener;
 
-  List<Body> bodies;
-  List<Contact> contacts;
-  List<Joint> joints;
+  List<Body> bodies = <Body>[];
+  List<Contact> contacts = <Contact>[];
+  List<Joint> joints = <Joint>[];
 
-  List<Position> positions;
-  List<Velocity> velocities;
-
-  int bodyCount;
-  int jointCount;
-  int contactCount;
-
-  int bodyCapacity;
-  int contactCapacity;
-  int jointCapacity;
+  int bodyCount = 0;
+  int jointCount = 0;
+  int contactCount = 0;
 
   int positionIterationCount;
 
@@ -51,45 +44,15 @@ class Island {
   // determine capacity.
   void init(int argBodyCapacity, int argContactCapacity, int argJointCapacity,
       ContactListener argListener) {
-    bodyCapacity = argBodyCapacity;
-    contactCapacity = argContactCapacity;
-    jointCapacity = argJointCapacity;
     bodyCount = 0;
     contactCount = 0;
+    jointCount = 0;
 
     listener = argListener;
 
-    if (bodies == null || bodyCapacity > bodies.length) {
-      bodies = new List<Body>(bodyCapacity);
-    }
-    if (contacts == null || contactCapacity > contacts.length) {
-      contacts = new List<Contact>(contactCapacity);
-    }
-    if (joints == null || jointCapacity > joints.length) {
-      joints = new List<Joint>(jointCapacity);
-    }
-
-    // dynamic array
-    if (velocities == null || bodyCapacity > velocities.length) {
-      final List<Velocity> old = velocities == null ?
-          new List<Velocity>(0) : velocities;
-      velocities = new List<Velocity>(bodyCapacity);
-      velocities.setRange(0, old.length, old);
-      for (int i = old.length; i < velocities.length; i++) {
-        velocities[i] = new Velocity();
-      }
-    }
-
-    // dynamic array
-    if(positions == null || bodyCapacity > positions.length){
-      List<Position> old = positions == null ?
-          new List<Position>(0) : positions;
-      positions = new List<Position>(bodyCapacity);
-      positions.setRange(0, old.length, old);
-      for (int i = old.length; i < positions.length; i++) {
-        positions[i] = new Position();
-      }
-    }
+    bodies.length = argBodyCapacity;
+    contacts.length = argContactCapacity;
+    joints.length = argJointCapacity;
   }
 
   void clear() {
@@ -219,6 +182,8 @@ class Island {
 
     report(_contactSolver.constraints);
 
+    _contactSolver.clearReferences();
+
 
     if (allowSleep) {
       num minSleepTime = Settings.BIG_NUMBER;
@@ -261,21 +226,21 @@ class Island {
   }
 
   /** Adds a body to the Island. */
-  void addBody(Body body) {
-    assert(bodyCount < bodyCapacity);
+  void addBody(Body body){
+    assert(bodyCount < bodies.length);
     body.islandIndex = bodyCount;
     bodies[bodyCount++] = body;
   }
 
   /** Add a contact to the Island. */
   void addContact(Contact contact) {
-    assert(contactCount < contactCapacity);
+    assert(contactCount < contacts.length);
     contacts[contactCount++] = contact;
   }
 
   /** Add a joint to the Island. */
   void addJoint(Joint joint) {
-    assert(jointCount < jointCapacity);
+    assert(jointCount < joints.length);
     joints[jointCount++] = joint;
   }
 

@@ -17,7 +17,7 @@
 part of box2d;
 
 class DynamicTreeNode {
-  Aabb2 box = new Aabb2();
+  final Aabb2 box = new Aabb2();
 
   DynamicTreeNode parent;
 
@@ -35,6 +35,15 @@ class DynamicTreeNode {
 
   /** Should never be constructed outside the engine. */
   DynamicTreeNode._construct();
+
+  /** Clears refernces so pooled objects don't cause memory leaks. */
+  void clearReferences() {
+    parent = null;
+    next = null;
+    childOne = null;
+    childTwo = null;
+    userData = null;
+  }
 
   /** Returns true if this node is a leaf. */
   bool get isLeaf => childOne == null;

@@ -64,6 +64,12 @@ class ContactConstraint {
     }
   }
 
+  /** Clears references so pooled objects don't cause memory leaks. */
+  void clearReferences() {
+    bodyA = null;
+    bodyB = null;
+  }
+
   String toString() {
     String result = 'localNormal: "$localNormal", localPoint: "$localPoint" '
         'normal: "$normal", radius: "$radius" friction: "$friction" '

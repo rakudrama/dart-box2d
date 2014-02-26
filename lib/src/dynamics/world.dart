@@ -171,6 +171,7 @@ class World {
     int type2 = contact.fixtureB.type;
 
     Queue<Contact> creator = _contactStacks[type1][type2].creator;
+    contact.clearReferences();
     creator.addFirst(contact);
   }
 
@@ -436,6 +437,8 @@ class World {
     if (body == _bodyList) {
       _bodyList = body.next;
     }
+
+    body.clearReferences();
 
     --_bodyCount;
   }

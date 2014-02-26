@@ -38,4 +38,12 @@ class ContactEdge {
    * Constructs a new ContactEdge with all fields set to null.
    */
   ContactEdge();
+
+  /** Clears references so pooled objects don't cause memory leaks. */
+  clearReferences() {
+    other = null;
+    contact = null;
+    prev = null;
+    next = null;
+  }
 }

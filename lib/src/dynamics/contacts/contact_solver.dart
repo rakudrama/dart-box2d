@@ -26,9 +26,8 @@ class ContactSolver {
    */
   static const double K_MAX_CONDITION_NUMBER = 100.0;
 
-  List<ContactConstraint> constraints = new List<ContactConstraint>.generate(
-      INITIAL_NUM_CONSTRAINTS, (i) => new ContactConstraint());
-  int constraintCount;
+  final List<ContactConstraint> constraints = <ContactConstraint>[];
+  int constraintCount = 0;
 
   /** Pooling */
   //TODO(gregbglw): What do many of these names mean? What is rA, for example?
@@ -55,15 +54,8 @@ class ContactSolver {
     constraintCount = contactCount;
 
     // dynamic array
-    if (constraints.length < contactCount) {
-      List<ContactConstraint> old = constraints;
-      int newLen = Math.max(old.length * 2, constraintCount);
-      constraints = new List<ContactConstraint>(newLen);
-      constraints.setRange(0, old.length, old);
-
-      for (int i = old.length; i < constraints.length; ++i) {
-        constraints[i] = new ContactConstraint();
-      }
+    while (constraints.length < constraintCount) {
+      constraints.add(new ContactConstraint());
     }
 
     for (int i = 0; i < constraintCount; ++i) {
@@ -201,9 +193,16 @@ class ContactSolver {
     }
   }
 
-  void warmStart(){
+  /** Clears refernces so pooled objects don't cause memory leaks. */
+  void clearReferences() {
+    for (int i = 0; i < constraintCount; i++) {
+      constraints[i].clearReferences();
+    }
+  }
+
+  void warmStart() {
     // Warm start.
-    for (int i = 0; i < constraintCount; ++i){
+    for (int i = 0; i < constraintCount; ++i) {
       ContactConstraint c = constraints[i];
 
       final Body bodyA = c.bodyA;
@@ -575,7 +574,7 @@ class PositionSolverManifold {
         cc.bodyA.getWorldPointToOut(cc.localPoint, pointA);
         cc.bodyB.getWorldPointToOut(cc.points[0].localPoint, pointB);
         if (MathBox.distanceSquared(pointA, pointB) >
-            Settings.EPSILON * Settings.EPSILON){
+            Settings.EPSILON * Settings.EPSILON) {
           normal.setFrom(pointB).sub(pointA);
           normal.normalize();
         } else {

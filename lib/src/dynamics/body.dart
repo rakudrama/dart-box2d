@@ -132,6 +132,13 @@ class Body {
     }
   }
 
+  /** Clears references so pooled objects don't cause memory leaks. */
+  void clearReferences() {
+    next = null;
+    prev = null;
+    userData = null;
+  }
+
   /**
    * Creates a fixture and attach it to this body. Use this function if you need
    * to set some fixture parameters, like friction. Otherwise you can create the

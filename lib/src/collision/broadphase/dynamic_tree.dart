@@ -159,10 +159,6 @@ class DynamicTree {
     }
 
     DynamicTreeNode node = _nodeStack.removeFirst();
-    node.parent = null;
-    node.childOne = null;
-    node.childTwo = null;
-    node.userData = null;
     node.key = _nodeCounter;
     ++_nodeCounter;
     ++_nodeCount;
@@ -392,6 +388,7 @@ class DynamicTree {
   void _freeNode(DynamicTreeNode node) {
     assert(node != null);
     assert(_nodeCount > 0);
+    node.clearReferences();
     _nodeStack.addFirst(node);
     --_nodeCount;
   }
